@@ -7,21 +7,21 @@ def generate_iv_from_key(key):
     iv = hashlib.sha256(key).digest()[:16]
     return iv
 
-def generate_fixed_key(private_pass):
-    fixed_key = (private_pass * 256).encode()
-    return fixed_key
+def generate_private_key(private_pass):
+    private_key = (private_pass * 256).encode()
+    return private_key
 
-def encrypt_text(plaintext, fixed_key):
-    fixed_key_16 = fixed_key[:16]
-    iv = generate_iv_from_key(fixed_key)
-    cipher = AES.new(fixed_key_16, AES.MODE_CBC, iv)
+def encrypt_text(plaintext, private_key):
+    private_key_16 = private_key[:16]
+    iv = generate_iv_from_key(private_key)
+    cipher = AES.new(private_key_16, AES.MODE_CBC, iv)
     ciphertext = cipher.encrypt(pad(plaintext.encode(), AES.block_size))
     return ciphertext
 
-def decrypt_text(ciphertext, fixed_key):
-    fixed_key_16 = fixed_key[:16]
-    iv = generate_iv_from_key(fixed_key)
-    cipher = AES.new(fixed_key_16, AES.MODE_CBC, iv)
+def decrypt_text(ciphertext, private_key):
+    private_key_16 = private_key[:16]
+    iv = generate_iv_from_key(private_key)
+    cipher = AES.new(private_key_16, AES.MODE_CBC, iv)
     decrypted_text = unpad(cipher.decrypt(ciphertext), AES.block_size)
     return decrypted_text.decode()
 
@@ -48,8 +48,8 @@ def main():
     if choice.lower() == 'e':
         plaintext = input("Enter the text to Encrypt: ")
         private_pass = input("Enter your Private Password: ")
-        fixed_key = generate_fixed_key(private_pass)
-        ciphertext = encrypt_text(plaintext, fixed_key)
+        private_key = generate_private_key(private_pass)
+        ciphertext = encrypt_text(plaintext, private_key)
         print("Encrypted text:", ciphertext.hex())
         
         save_option = input("Do you want to Save the encrypted text file: (y/n) ")
@@ -66,8 +66,8 @@ def main():
         try:
             ciphertext = bytes.fromhex(input("Enter the Encrypted text: "))
             private_pass = input("Enter your private password: ")
-            fixed_key = generate_fixed_key(private_pass)
-            decrypted_text = decrypt_text(ciphertext, fixed_key)
+            private_key = generate_private_key(private_pass)
+            decrypted_text = decrypt_text(ciphertext, private_key)
             print("Decrypted text:", decrypted_text)
             
             save_option = input("Do you want to Save the Decrypted text file: (y/n) ")
