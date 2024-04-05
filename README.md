@@ -4,6 +4,7 @@ This repository contains a simple Python script for encrypting and decrypting te
 Install:
 
 pip install -r requirements.txt
+
 pip3 install -r requirements.txt
 
 
