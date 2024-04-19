@@ -46,8 +46,20 @@ def main():
     choice = input("Do you want to Encrypt or Decrypt: (e/d)? ")
 
     if choice.lower() == 'e':
-        plaintext = input("Enter the text to Encrypt: ")
+        print("Enter the text to Encrypt (Press Enter twice to finish):")
+        lines = []
+        while True:
+            line = input()
+            if not line:
+                break
+            lines.append(line)
+        plaintext = '\n'.join(lines)          
+        
         private_pass = input("Enter your Private Password: ")
+        if not private_pass:
+            print("Please Must Enter Password.")
+            return  
+            
         private_key = generate_private_key(private_pass)
         ciphertext = encrypt_text(plaintext, private_key)
         print("Encrypted text:", ciphertext.hex())
