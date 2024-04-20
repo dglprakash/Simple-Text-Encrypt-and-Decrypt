@@ -82,7 +82,7 @@ def main():
                 qr_filename = input("Enter the Filename: ")
                 create_qr_code(ciphertext.hex(), qr_filename + '_encrypted.png')
 
-            print("Encrypt done.")
+            print("Encryption is done.")
 
         elif choice.lower() == 'd':
             try:
@@ -102,7 +102,7 @@ def main():
                     qr_filename = input("Enter the Filename: ")
                     create_qr_code(decrypted_text, qr_filename + '_decrypted.png')
 
-                print("Decrypt done.")
+                print("Decryption done.")
 
             except ValueError:
                 print("Invalid hexadecimal format for ciphertext.")
