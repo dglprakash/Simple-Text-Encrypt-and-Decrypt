@@ -43,7 +43,7 @@ def create_qr_code(text, filename):
 
 def main():
     while True:
-        choice = input("Do you want to Encrypt or Decrypt or Exit (e/d)? ")
+        choice = input("Do you want to Encrypt or Decrypt (e/d)? ")
 
         if choice.lower() == 'e':
             print("Enter the text to Encrypt (Type '/done' on a new line to finish or '/clear' to clear all text):")
@@ -52,7 +52,7 @@ def main():
                 line = input()
                 if line.strip() == '/clear':
                     plaintext_lines.clear()
-                    print("All text cleared.")
+                    print("All text is cleared, type the text again:")
                     continue
                 if line.strip() == '/done':
                     if not plaintext_lines:
