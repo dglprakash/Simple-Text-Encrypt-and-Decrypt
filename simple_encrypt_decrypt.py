@@ -41,61 +41,81 @@ def create_qr_code(text, filename):
     except IOError:
         print(f"Error: Failed to save QR code to {filename}")
 
-
 def main():
-    choice = input("Do you want to Encrypt or Decrypt: (e/d)? ")
+    while True:
+        choice = input("Do you want to Encrypt or Decrypt or Exit (e/d)? ")
 
-    if choice.lower() == 'e':
-        print("Enter the text to Encrypt (Press Enter twice to finish):")
-        lines = []
-        while True:
-            line = input()
-            if not line:
-                break
-            lines.append(line)
-        plaintext = '\n'.join(lines)          
-        
-        private_pass = input("Enter your Private Password: ")
-        if not private_pass:
-            print("Please Must Enter Password.")
-            return  
-            
-        private_key = generate_private_key(private_pass)
-        ciphertext = encrypt_text(plaintext, private_key)
-        print("Encrypted text:", ciphertext.hex())
-        
-        save_option = input("Do you want to Save the encrypted text file: (y/n) ")
-        if save_option.lower() == 'y':
-            filename = input("Enter the Filename: ")
-            save_to_file(ciphertext.hex(), filename + '_encrypted.txt')
-        
-        qr_option = input("Do you want to create a QR code: (y/n) ")
-        if qr_option.lower() == 'y':
-            qr_filename = input("Enter the Filename: ")
-            create_qr_code(ciphertext.hex(), qr_filename + '_encrypted.png')
-            
-    elif choice.lower() == 'd':
-        try:
-            ciphertext = bytes.fromhex(input("Enter the Encrypted text: "))
-            private_pass = input("Enter your private password: ")
+        if choice.lower() == 'e':
+            print("Enter the text to Encrypt (Type '/done' on a new line to finish or '/clear' to clear all text):")
+            plaintext_lines = []
+            while True:
+                line = input()
+                if line.strip() == '/clear':
+                    plaintext_lines.clear()
+                    print("All text cleared.")
+                    continue
+                if line.strip() == '/done':
+                    if not plaintext_lines:
+                        print("Error: No input provided.")
+                        return
+                    break
+                plaintext_lines.append(line)
+
+            plaintext = '\n'.join(plaintext_lines)
+
+            private_pass = input("Enter your Private Password: ")
+            if not private_pass:
+                print("Please Must Enter Password.")
+                return
+
             private_key = generate_private_key(private_pass)
-            decrypted_text = decrypt_text(ciphertext, private_key)
-            print("Decrypted text:", decrypted_text)
-            
-            save_option = input("Do you want to Save the Decrypted text file: (y/n) ")
+            ciphertext = encrypt_text(plaintext, private_key)
+            print("Encrypted text:", ciphertext.hex())
+
+            save_option = input("Do you want to Save the encrypted text file: (y/n) ")
             if save_option.lower() == 'y':
                 filename = input("Enter the Filename: ")
-                save_to_file(decrypted_text, filename + '_decrypted.txt')
-                
+                save_to_file(ciphertext.hex(), filename + '_encrypted.txt')
+
             qr_option = input("Do you want to create a QR code: (y/n) ")
             if qr_option.lower() == 'y':
                 qr_filename = input("Enter the Filename: ")
-                create_qr_code(decrypted_text, qr_filename + '_decrypted.png')
-                
-        except ValueError:
-            print("Invalid hexadecimal format for ciphertext.")
-    else:
-        print("Invalid choice. Please enter 'e' for encryption or 'd' for decryption.")
+                create_qr_code(ciphertext.hex(), qr_filename + '_encrypted.png')
+
+            print("Encrypt done.")
+
+        elif choice.lower() == 'd':
+            try:
+                ciphertext = bytes.fromhex(input("Enter the Encrypted text: "))
+                private_pass = input("Enter your private password: ")
+                private_key = generate_private_key(private_pass)
+                decrypted_text = decrypt_text(ciphertext, private_key)
+                print("Decrypted text:", decrypted_text)
+
+                save_option = input("Do you want to Save the Decrypted text file: (y/n) ")
+                if save_option.lower() == 'y':
+                    filename = input("Enter the Filename: ")
+                    save_to_file(decrypted_text, filename + '_decrypted.txt')
+
+                qr_option = input("Do you want to create a QR code: (y/n) ")
+                if qr_option.lower() == 'y':
+                    qr_filename = input("Enter the Filename: ")
+                    create_qr_code(decrypted_text, qr_filename + '_decrypted.png')
+
+                print("Decrypt done.")
+
+            except ValueError:
+                print("Invalid hexadecimal format for ciphertext.")
+
+        elif choice.lower() == 'e':
+            break
+
+        else:
+            print("Invalid choice. Please enter 'e' for encryption, 'd' for decryption, or 'c' for clearing input.")
+
+        continue_option = input("Do you want to continue again? (y/n) ")
+        if continue_option.lower() != 'y':
+            break
 
 if __name__ == "__main__":
     main()
