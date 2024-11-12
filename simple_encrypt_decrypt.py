@@ -8,7 +8,7 @@ def generate_iv_from_key(key):
     return iv
 
 def generate_private_key(private_pass):
-    private_key = (private_pass * 256).encode()
+    private_key = (private_pass * 256).encode()  # Repeating password to get a longer key
     return private_key
 
 def encrypt_text(plaintext, private_key):
@@ -43,9 +43,9 @@ def create_qr_code(text, filename):
 
 def main():
     while True:
-        choice = input("Do you want to Encrypt or Decrypt (e/d)? ")
+        choice = input("Do you want to Encrypt or Decrypt (e/d)? ").lower()
 
-        if choice.lower() == 'e':
+        if choice == 'e':
             print("Enter the text to Encrypt (Type '/done' on a new line to finish or '/clear' to clear all text):")
             plaintext_lines = []
             while True:
@@ -84,13 +84,14 @@ def main():
 
             print("Encryption is done.")
 
-        elif choice.lower() == 'd':
+        elif choice == 'd':
             try:
                 ciphertext = bytes.fromhex(input("Enter the Encrypted text: "))
                 private_pass = input("Enter your private password: ")
                 private_key = generate_private_key(private_pass)
                 decrypted_text = decrypt_text(ciphertext, private_key)
-                print("Decrypted text:", decrypted_text)
+                print("Decrypted text:")
+                print(decrypted_text)
 
                 save_option = input("Do you want to Save the Decrypted text file: (y/n) ")
                 if save_option.lower() == 'y':
@@ -105,13 +106,10 @@ def main():
                 print("Decryption done.")
 
             except ValueError:
-                print("Invalid hexadecimal format for ciphertext.")
-
-        elif choice.lower() == 'e':
-            break
+                print("Invalid hexadecimal format for ciphertext. Please make sure the input is a valid hex string.")
 
         else:
-            print("Invalid choice. Please enter 'e' for encryption, 'd' for decryption, or 'c' for clearing input.")
+            print("Invalid choice. Please enter 'e' for encryption or 'd' for decryption.")
 
         continue_option = input("Do you want to continue again? (y/n) ")
         if continue_option.lower() != 'y':
